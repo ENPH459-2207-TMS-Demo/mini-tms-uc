@@ -44,8 +44,8 @@ elapsedMicros protocol2;
 void loop() {
   // put your main code here, to run repeatedly:
   if (control == HIGH){
-    if (sinceTest1 >= 1000) {
-      sinceTest1 = sinceTest1 - 1000;
+    if (protocol1 >= 1000) {
+      protocol1 = protocol1 - 1000;
     }
   } else {
 
