@@ -4,31 +4,50 @@
 #define driver_period 100/3
 
 void gate_driver() {
-  digitalWrite(pin2, pwmState);
+  digitalWrite(reg_LOW, pwmState);
   pwmState = !pwmState;
-  digitalWrite(pin1, pwmState);
+  digitalWrite(reg_HIGH, pwmState);
 }
 
 // Create an IntervalTimer object 
 IntervalTimer pwmTimer;
 
 const int ledPin = LED_BUILTIN;  // the pin with a LED
-const int pin1 = 1;
-const int pin2 = 2;
+
+// Timer pins
+const int reg_HIGH = 3;
+const int reg_LOW = 4;
+
+const int proto_HIGH = 5;
+const int proto_LOW = 6;
+
+const int control = 34;
 
 void setup() {
   pinMode(ledPin, OUTPUT);
-  pinMode(pin1, OUTPUT);
-  pinMode(pin2, OUTPUT);
-  Serial.begin(9600);
+  pinMode(reg_HIGH, OUTPUT);
+  pinMode(reg_LOW, OUTPUT);
+
+  pinMode(control, INPUT_PULLDOWN);
+  pinMode(proto_HIGH, OUTPUT);
+  pinMode(proto_LOW, OUTPUT);
+  
   pwmTimer.begin(gate_driver, driver_period); // 5 is 100 kHz, adjust accordingly
 }
 
-// The interrupt will blink the LED, and keep
-// track of how many times it has blinked.
-int tmsState = LOW;
 int pwmState = LOW;
+
+// Variables for timed outputs
+elapsedMicros protocol1;
+elapsedMicros protocol2;
 
 void loop() {
   // put your main code here, to run repeatedly:
+  if (control == HIGH){
+    if (sinceTest1 >= 1000) {
+      sinceTest1 = sinceTest1 - 1000;
+    }
+  } else {
+
+  }
 }
