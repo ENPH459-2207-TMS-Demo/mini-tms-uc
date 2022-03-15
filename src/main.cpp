@@ -52,30 +52,52 @@ void setup() {
 }
 
 // Variables for timed outputs
-elapsedMicros protocol1;
-elapsedMicros protocol2;
+elapsedMillis protocol1;
+elapsedMillis protocol2;
 
-const int proto_1_period = 10000000;
-const int proto_2_period = 100000000;
+const int proto_1_period = 1000;
+const int proto_2_period = 10000;
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (control == HIGH){
-    if (protocol1 >= proto_1_period) {
+  // if (control == LOW){
+  //   if (protocol1 >= proto_1_period) {
+  //     digitalWrite(SD_pin1, HIGH);
+  //     Serial.println("Protocol 1 on");
+  //     protocol1 = protocol1 - proto_1_period;
+  //   } else {
+  //     digitalWrite(SD_pin1, LOW);
+  //     Serial.println("Protocol 1 off");
+  //   }
+
+  //   if (protocol1 >= proto_2_period) {
+  //     digitalWrite(SD_pin2, HIGH);
+  //     protocol2 = protocol2 - proto_2_period;
+  //     Serial.println("Protocol 2 on");
+  //   } else {
+  //     digitalWrite(SD_pin2, LOW);
+  //     Serial.println("Protocol 2 off");
+  //   }
+  // } else {
+  //   digitalWrite(SD_pin1, HIGH);
+  //   digitalWrite(SD_pin2, HIGH);
+  // }
+
+  if (protocol1 >= proto_1_period) {
       digitalWrite(SD_pin1, HIGH);
+      Serial.println("Protocol 1 on");
       protocol1 = protocol1 - proto_1_period;
     } else {
       digitalWrite(SD_pin1, LOW);
+      Serial.println("Protocol 1 off");
     }
 
-    if (protocol1 >= proto_2_period) {
-      digitalWrite(SD_pin2, HIGH);
-      protocol2 = protocol2 - proto_2_period;
-    } else {
-      digitalWrite(SD_pin2, LOW);
-    }
-  } else {
-    digitalWrite(SD_pin1, HIGH);
+  if (protocol1 >= proto_2_period) {
     digitalWrite(SD_pin2, HIGH);
+    protocol2 = protocol2 - proto_2_period;
+    Serial.println("Protocol 2 on");
+  } else {
+    digitalWrite(SD_pin2, LOW);
+    Serial.println("Protocol 2 off");
   }
 }
