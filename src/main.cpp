@@ -1,13 +1,25 @@
 #include <Arduino.h>
+#include <Audio.h>
 
-#define driver_period 1000
+/*
+How to measure frequency:
+
+- The timer is measured in us, but (likely due to hardware limits) it gets unclear at higher frequencies.
+
+100 kHz is approximately a value of 5
+
+For kHz range: use value/100*5 for desired value
+
+Enter the floating point exactly: do not rely on microcontroller operation for the math
+*/
+#define driver_period 1.76056338028169014 // approximately 283 kHz
 
 uint8_t tms_state = false;
-uint16_t tms_1hz = 1e6; // for 1 second timers (timers are measured in microseconds)
-uint16_t tms_10hz = 10e6;
 
 uint8_t pwm1 = false;
 uint8_t pwm2 = true;
+
+uint8_t sd_state = true;
 
 // Create an IntervalTimer object 
 IntervalTimer pwmTimer;
@@ -19,12 +31,9 @@ const int ledPin = LED_BUILTIN;  // the pin with a LED
 const int reg_HIGH = 3;
 const int reg_LOW = 4;
 
-const int proto_HIGH = 5;
-const int SD_pin1 = 6; // SD pin for one of the gate drivers
-const int proto_LOW = 7;
-const int SD_pin2 = 8;
+const int SD_pin = 6; // SD pin for one of the gate driversz
 
-const int control = 34;
+const int power = 34;
 
 void gate_driver() {
   digitalWrite(reg_LOW, pwm1);
@@ -34,7 +43,8 @@ void gate_driver() {
 }
 
 void tms_protocol() {
-  
+  digitalWrite(SD_pin, sd_state);
+  sd_state = !sd_state;
 }
 
 void setup() {
@@ -42,13 +52,10 @@ void setup() {
   pinMode(reg_HIGH, OUTPUT);
   pinMode(reg_LOW, OUTPUT);
 
-  pinMode(control, INPUT_PULLDOWN);
-  pinMode(proto_HIGH, OUTPUT);
-  pinMode(proto_LOW, OUTPUT);
+  pinMode(power, INPUT_PULLDOWN);
 
   // Thing
-  pinMode(SD_pin1, OUTPUT);
-  pinMode(SD_pin2, OUTPUT);
+  pinMode(SD_pin, OUTPUT);
   
   pwmTimer.begin(gate_driver, driver_period); // 5 is 100 kHz, adjust accordingly
 }
@@ -60,48 +67,16 @@ elapsedMillis protocol2;
 const int proto_1_period = 1000;
 const int proto_2_period = 10000;
 
+elapsedMillis sinceTest1;
+elapsedMillis sinceTest2;
+elapsedMillis sinceTest3;
+
 void loop() {
-
-  // put your main code here, to run repeatedly:
-  // if (control == LOW){
-  //   if (protocol1 >= proto_1_period) {
-  //     digitalWrite(SD_pin1, HIGH);
-  //     Serial.println("Protocol 1 on");
-  //     protocol1 = protocol1 - proto_1_period;
-  //   } else {
-  //     digitalWrite(SD_pin1, LOW);
-  //     Serial.println("Protocol 1 off");
-  //   }
-
-  //   if (protocol1 >= proto_2_period) {
-  //     digitalWrite(SD_pin2, HIGH);
-  //     protocol2 = protocol2 - proto_2_period;
-  //     Serial.println("Protocol 2 on");
-  //   } else {
-  //     digitalWrite(SD_pin2, LOW);
-  //     Serial.println("Protocol 2 off");
-  //   }
-  // } else {
-  //   digitalWrite(SD_pin1, HIGH);
-  //   digitalWrite(SD_pin2, HIGH);
-  // }
-
-  // // TODO: fix this for SD pins
-  // if (protocol1 >= proto_1_period) {
-  //     digitalWrite(SD_pin1, HIGH);
-  //     Serial.println("Protocol 1 on");
-  //     protocol1 = protocol1 - proto_1_period;
-  //   } else {
-  //     digitalWrite(SD_pin1, LOW);
-  //     Serial.println("Protocol 1 off");
-  //   }
-
-  // if (protocol1 >= proto_2_period) {
-  //   digitalWrite(SD_pin2, HIGH);
-  //   protocol2 = protocol2 - proto_2_period;
-  //   Serial.println("Protocol 2 on");
-  // } else {
-  //   digitalWrite(SD_pin2, LOW);
-  //   Serial.println("Protocol 2 off");
-  // }
+  if (sinceTest1 >= proto_1_period) {
+    sinceTest1 = sinceTest1 - proto_1_period;
+    digitalWrite(SD_pin, sd_state);
+    sd_state = !sd_state;
+  }
 }
+
+  
