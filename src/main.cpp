@@ -108,9 +108,11 @@ Bounce oneButton = Bounce(button_1hz, 10);
 Bounce tenButton = Bounce(button_10hz, 10);
 
 void loop() {
+  volatile byte state_copy; // copy of sd_state
   if (constButton.update()){
     if (constButton.fallingEdge()) { // this is for pin button to gnd, pressed
       disp.println("TMS Protocol: OFF");
+      state_copy = false;
       tmsTimer.end();
     }
   } else if (oneButton.update()){
@@ -127,15 +129,14 @@ void loop() {
   disp.clear();
   
   // TODO: test if this causes some delay in the uc that is non-negligible
-  volatile byte state_copy; // copy of sd_state
   noInterrupts();
   state_copy = sd_state;
   interrupts();
 
   if (state_copy){
-    tone(buzzer, 1000);
+    analogWriteFrequency(buzzer, 1000);
   } else {
-    noTone(buzzer);
+    analogWriteFrequency(buzzer, 0);
   }
 }
 
