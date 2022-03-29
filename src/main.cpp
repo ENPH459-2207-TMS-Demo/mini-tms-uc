@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <Bounce.h>
-#include <Display.h>
+// #include <Display.h>
 
 /*
 How to measure frequency:
@@ -17,7 +17,7 @@ Enter the floating point exactly: do not rely on microcontroller operation for t
 #define proto1 1000000
 #define proto10 10000000
 
-Display disp;
+//Display disp;
 
 byte tms_state = false;
 byte pwm1 = false;
@@ -95,7 +95,7 @@ void setup() {
   
   pwmTimer.begin(gate_driver, driver_period); // 5 is 100 kHz, adjust accordingly
   tmsTimer.priority(100);
-  disp.setup();
+  // disp.setup();
   // TODO: below is inplementation of interrupt pins
   // attachInterrupt(digitalPinToInterrupt(button_const), ISR_const,RISING);
   // attachInterrupt(digitalPinToInterrupt(button_1hz), ISR_1hz,RISING);
@@ -111,22 +111,22 @@ void loop() {
   volatile byte state_copy; // copy of sd_state
   if (constButton.update()){
     if (constButton.fallingEdge()) { // this is for pin button to gnd, pressed
-      disp.println("TMS Protocol: OFF");
+      //disp.println("TMS Protocol: OFF");
       state_copy = false;
       tmsTimer.end();
     }
   } else if (oneButton.update()){
     if (oneButton.fallingEdge()){
-      disp.println("TMS Protocol: 1 Hz");
+      //disp.println("TMS Protocol: 1 Hz");
       tmsTimer.begin(tms_protocol,proto1);
     }
   } else if (tenButton.update()){
     if (tenButton.fallingEdge()){
-      disp.println("TMS Protocol: 10 Hz");
+      //disp.println("TMS Protocol: 10 Hz");
       tmsTimer.begin(tms_protocol,proto10);
     }
   }
-  disp.clear();
+  //disp.clear();
   
   // TODO: test if this causes some delay in the uc that is non-negligible
   noInterrupts();
