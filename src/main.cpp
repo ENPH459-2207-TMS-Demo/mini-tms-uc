@@ -4,7 +4,6 @@
 
 /*
 How to measure frequency:
-
 - The timer is measured in us, but (likely due to hardware limits) it gets unclear at higher frequencies.
 
 100 kHz is approximately a value of 5
@@ -14,8 +13,8 @@ For kHz range: use value/100*5 for desired value
 Enter the floating point exactly: do not rely on microcontroller operation for the math
 */
 #define driver_period 1.76056338028169014 // approximately 283 kHz
-#define proto10 50000
-#define proto1 500000
+#define proto10 50000 // 10 Hz
+#define proto1 500000 // 1 Hz
 
 //Display disp;
 
@@ -51,7 +50,7 @@ void tms_protocol() {
   digitalWriteFast(SD_pin, sd_state);
   sd_state = !sd_state;
   if (sd_state) {
-    tone(35, 264);
+    tone(35, 264, 10);
   } else {
     noTone(35);
   }
