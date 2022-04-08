@@ -73,6 +73,10 @@ void setup() {
   
   pwmTimer.begin(gate_driver, driver_period); // 5 is 100 kHz, adjust accordingly
   tmsTimer.priority(100);
+
+  digitalWrite(ledPin, 1);
+  
+  // digitalWriteFast(SD_pin, 0); // this should fix the thing where it needs a button press to run
 }
 
 Bounce button = Bounce(control, 10);
@@ -95,7 +99,7 @@ void loop() {
       } else {
         tms_state = 0;
         tmsTimer.end();
-        digitalWriteFast(SD_pin, 0); // turn off SD pin
+        digitalWriteFast(SD_pin, 1); // turn off SD pin
         noTone(35);
       }
     }
